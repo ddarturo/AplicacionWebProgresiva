@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- El atributo lang="es" indica que el idioma principal de la página es español -->
+<html lang="es">
+<head>
+    <!-- Configuración básica de codificación de caracteres (UTF-8 incluye acentos y la ñ) -->
+    <meta charset="UTF-8">
+    <!-- Configuración para que la web sea "responsive" (se adapte a pantallas de móviles) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Gastos</title>
+    <!-- Enlazamos nuestro archivo de estilos CSS para el diseño -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Enlazamos el archivo manifest.json, necesario para que sea una App (PWA) instalable -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Define el color principal del tema para el navegador (ej. la barra superior en móviles) -->
+    <meta name="theme-color" content="#014872">
+</head>
+<body>
+    <header>
+        <h1>Gestor de Gastos</h1>
+        <!-- Indicador de conexión (Online / Offline). Los atributos 'aria-' son para accesibilidad (lectores de pantalla) -->
+        <div id="status" class="status-online" aria-live="assertive" role="status">En línea</div>
+    </header>
+
+    <main class="container">
+        <!-- Panel de Saldo (Primero en móvil, Derecha en Desktop) -->
+        <aside class="balance-panel">
+            <section class="balance-section" aria-labelledby="balance-heading">
+                <h2 id="balance-heading">Mi Saldo</h2>
+                <div class="input-group">
+                    <label for="initial-balance">Saldo Inicial ($):</label>
+                    <!-- Campo numérico para introducir el saldo con el que empezamos -->
+                    <input type="number" id="initial-balance" step="0.01" min="0" placeholder="0.00" aria-label="Ingresa tu saldo inicial">
+                </div>
+                <div class="balance-display">
+                    <p>Saldo Restante:</p>
+                    <!-- Aquí se mostrará dinámicamente el saldo restante mediante JavaScript -->
+                    <h3 id="current-balance" aria-live="polite">$0.00</h3>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Panel Principal (Abajo en móvil, Izquierda en Desktop) -->
+        <div class="main-panel">
+            <section class="form-section" aria-labelledby="form-heading">
+                <h2 id="form-heading">Añadir Gasto</h2>
+                <!-- Formulario para añadir un nuevo gasto. 'novalidate' desactiva la validación por defecto del navegador para usar la nuestra en JS -->
+                <form id="expense-form" novalidate>
+                    <div class="input-group">
+                        <label for="description">Descripción:</label>
+                        <!-- Campo de texto para indicar de qué fue el gasto -->
+                        <input type="text" id="description" required placeholder="Ej. Compra supermercado" aria-required="true" aria-describedby="desc-error" aria-invalid="false">
+                        <!-- Etiqueta para mostrar un mensaje de error si la descripción está vacía -->
+                        <small id="desc-error" class="error-msg" aria-live="assertive"></small>
+                    </div>
+                    <div class="input-group">
+                        <label for="amount">Monto ($):</label>
+                        <!-- Campo numérico para el costo del gasto -->
+                        <input type="number" id="amount" required step="0.01" min="0.01" placeholder="0.00" aria-required="true" aria-describedby="amount-error" aria-invalid="false">
+                        <!-- Etiqueta para mostrar un mensaje de error si el monto es inválido -->
+                        <small id="amount-error" class="error-msg" aria-live="assertive"></small>
+                    </div>
+                    <button type="submit">Guardar Gasto</button>
+                </form>
+            </section>
+
+            <section class="list-section" aria-labelledby="list-heading">
+                <h2 id="list-heading">Tus Gastos</h2>
+                <!-- Lista desordenada (ul) donde JavaScript inyectará (renderizará) los gastos uno por uno -->
+                <ul id="expense-list" role="list" aria-live="polite">
+                    <!-- Los gastos se renderizarán aquí -->
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>Aplicación Web Progresiva - Gestor de Gastos</p>
+    </footer>
+
+    <!-- Contenedor vacío donde aparecerán las notificaciones temporales (Toasts) de éxito -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <!-- Enlazamos nuestro archivo de lógica en JavaScript. Va al final para que cargue después de dibujar la página -->
+    <script src="script.js"></script>
+</body>
+</html>

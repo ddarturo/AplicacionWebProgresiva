@@ -1,0 +1,395 @@
+/* 
+  :root sirve para definir variables CSS (Custom Properties) globales.
+  Es como tener colores guardados en cajitas con nombres que podemos usar en todo el documento.
+  Si queremos cambiar el color primario, solo lo cambiamos aquí y se actualiza en toda la app.
+*/
+:root {
+    --primary-color: #0c1c38;
+    --surface-color: rgba(255, 255, 255, 0.65);
+    --text-color: #0c1c38;
+    --border-color: rgba(255, 255, 255, 0.5);
+    --success-color: #10b981;
+    --error-color: #ef4444;
+}
+
+/* 
+  El asterisco (*) es el selector universal. Aplica a absolutamente todos los elementos HTML.
+  box-sizing: border-box hace que los paddings y bordes no sumen ancho extra al tamaño total del elemento.
+  Resetear margin y padding a 0 evita márgenes inesperados que ponen los navegadores por defecto.
+*/
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Configuración base del tamaño de letra */
+html {
+    font-size: 16px; 
+}
+
+/* 
+  El body envuelve todo. Usamos Flexbox (display: flex; flex-direction: column) 
+  para organizar los elementos en una columna de arriba a abajo.
+*/
+body {
+    /* Familia de tipografías del sistema para que se vea nativo en cualquier dispositivo */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* Un fondo degradado de un azul a un verde menta */
+    background: linear-gradient(135deg, #014872 0%, #A0EACF 100%);
+    /* El fondo se queda fijo mientras haces scroll */
+    background-attachment: fixed;
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh asegura que el body ocupe por lo menos el 100% del alto de la ventana visible */
+    min-height: 100vh;
+    align-items: center;
+}
+
+/* El encabezado de la página */
+header {
+    width: 100%;
+    /* Un fondo semitransparente con efecto de desenfoque (Glassmorphism) */
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    /* El clamp() hace que el padding varíe dinámicamente según el tamaño de la pantalla */
+    padding: clamp(1.5rem, 3vw, 2.5rem) 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.03em;
+}
+
+/* Estilos de la etiqueta o pastilla que dice "En línea" / "Sin conexión" */
+#status {
+    display: inline-block;
+    padding: 0.3em 1em;
+    border-radius: 9999px; /* Crea bordes completamente redondeados (tipo pastilla) */
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-weight: 600;
+    transition: all 0.3s ease; /* Transición suave al cambiar de color */
+}
+
+/* Clases específicas para los estados de conexión que se aplican desde JavaScript */
+.status-online {
+    background-color: rgba(209, 250, 229, 0.8);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.status-offline {
+    background-color: rgba(254, 226, 226, 0.8);
+    color: #991b1b;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* --- Sistema de Rejilla (Grid Layout) para la estructura principal --- */
+main.container {
+    flex: 1; /* Hace que el main empuje al footer hacia abajo si hay poco contenido */
+    display: grid;
+    grid-template-columns: 1fr; /* Por defecto (en móvil) será una sola columna */
+    gap: 2rem;
+    width: 100%;
+    max-width: 1100px;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem);
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+}
+
+/* Media Query: Se activa solo en pantallas de más de 800px (Desktop / Tablets grandes) */
+@media (min-width: 800px) {
+    main.container {
+        /* Divide el layout en 2 columnas: 1.5 fracciones izquierda, 1 fracción derecha */
+        grid-template-columns: 1.5fr 1fr;
+        align-items: start;
+    }
+    .balance-panel {
+        order: 2; /* Movemos el panel de saldo visualmente a la derecha */
+        position: sticky; /* Se queda "pegado" al hacer scroll */
+        top: 2rem;
+    }
+    .main-panel {
+        order: 1; /* El panel principal visualmente a la izquierda */
+    }
+}
+
+/* Media Query: Se activa en pantallas menores de 799px (Teléfonos móviles) */
+@media (max-width: 799px) {
+    .balance-panel {
+        order: -1; /* Forzamos visualmente el saldo arriba del todo en móviles */
+    }
+}
+
+/* Estilos de cada bloque blanco semitransparente (Tarjetas/Cards) */
+section {
+    background-color: var(--surface-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    width: 100%;
+}
+
+h2 {
+    font-size: clamp(1.2rem, 4vw, 1.7rem);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* Sección de saldo total en grande */
+.balance-display {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.balance-display p {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.balance-display h3 {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Estilos de los contenedores de inputs (inputs + etiquetas + errores) */
+.input-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: 500;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    color: var(--text-color);
+}
+
+/* Estilos comunes para los inputs de texto y número */
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.6);
+    color: var(--text-color);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Efecto cuando el usuario hace click/enfoca un input */
+input[type="text"]:focus,
+input[type="number"]:focus,
+button:focus-visible {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Crea un anillo azul brillante exterior cuando está seleccionado (Outline visual) */
+    box-shadow: 0 0 0 4px rgba(12, 28, 56, 0.2);
+}
+
+/* Estilo que se activa (desde JS) cuando hay un error de validación */
+input[aria-invalid="true"] {
+    border-color: var(--error-color);
+    background-color: rgba(254, 226, 226, 0.6);
+}
+
+/* El mensajito rojo de error abajo de los inputs */
+.error-msg {
+    display: block;
+    color: #c91818;
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    font-weight: 600;
+}
+
+/* El botón principal de guardar */
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-weight: 600;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(12, 28, 56, 0.25);
+}
+
+/* Efecto visual cuando pasas el ratón (hover) por encima del botón guardar */
+button[type="submit"]:hover {
+    transform: translateY(-2px); /* Se mueve un poco hacia arriba */
+    box-shadow: 0 8px 20px rgba(12, 28, 56, 0.35); /* Sombra más grande, da efecto 3D */
+    background-color: #163261;
+}
+
+/* Contenedor de la lista de gastos <ul> */
+ul {
+    list-style: none; /* Quita los puntos por defecto de las listas HTML */
+    display: grid; /* Usamos grid para manejar fácilmente los espacios entre elementos */
+    gap: 1rem;
+}
+
+/* Cada elemento de gasto (fila) */
+li {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    display: flex; /* Flexbox permite alinear lado a lado fácilmente */
+    justify-content: space-between; /* Empuja un div a la izquierda y otro a la derecha */
+    align-items: center; /* Los centra verticalmente */
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Efecto hover al pasar el ratón sobre un gasto de la lista */
+li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.expense-info h3 {
+    margin-bottom: 0.25rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-weight: 600;
+}
+
+.expense-info p {
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    opacity: 0.8; /* Texto de fecha un poco transparente */
+}
+
+/* Lado derecho del item del gasto (Monto + Botón de borrar) */
+.expense-actions {
+    display: flex;
+    align-items: center;
+}
+
+.expense-amount {
+    font-weight: 700;
+    font-size: clamp(1.1rem, 4vw, 1.3rem);
+}
+
+/* Botón pequeño de eliminar */
+button.delete-btn {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 0.5rem 1rem;
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    width: auto;
+    margin-left: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+button.delete-btn:hover {
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* --- Notificaciones Flotantes (Toasts) --- */
+#toast-container {
+    position: fixed; /* Se queda fijo en la pantalla, independientemente del scroll */
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column; /* Se apilarán hacia arriba si hay varias */
+    gap: 10px;
+    z-index: 9999; /* Asegura que esté por encima de todo el resto del contenido */
+}
+
+/* La notificación en sí */
+.toast {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-left: 5px solid var(--success-color); /* Borde verde lateral indicando éxito */
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    color: var(--primary-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* Animación llamada 'slideIn' para que entre deslizándose */
+    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transiciones para salir (hide) */
+}
+
+/* Esta clase se añade por JS para desaparecer el toast (ver script.js) */
+.toast.hide {
+    opacity: 0;
+    transform: translateX(120%); /* Se va hacia la derecha de la pantalla */
+}
+
+/* Animación de entrada definida por nosotros (Keyframes) */
+@keyframes slideIn {
+    from {
+        transform: translateX(120%); /* Empieza fuera de la pantalla (derecha) */
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0); /* Termina en su posición natural */
+        opacity: 1;
+    }
+}
+
+/* Pie de página */
+footer {
+    width: 100%;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.875rem;
+    margin-top: auto; /* Empuja el footer siempre al final gracias al Flexbox del body */
+}
+
+/* Media Query extrema para teléfonos muy muy pequeños (<480px) */
+@media (max-width: 480px) {
+    /* En pantallas enanas, la lista pasa a ser columnas apiladas */
+    li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .expense-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    button.delete-btn {
+        margin-left: 0; /* Quitamos el margen, ya no hace falta porque está en su propia fila */
+    }
+    /* Centramos los toasts en la parte inferior de pantallas muy pequeñas */
+    #toast-container {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+    }
+    .toast {
+        justify-content: center;
+    }
+}
